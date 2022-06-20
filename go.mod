@@ -7,7 +7,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0
 	google.golang.org/grpc v1.46.2
 	k8s.io/api v0.24.0
-	k8s.io/apimachinery v0.24.0
+	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.0
 	k8s.io/klog/v2 v2.60.1
 	sigs.k8s.io/secrets-store-csi-driver v1.1.2
