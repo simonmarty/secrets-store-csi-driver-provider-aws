@@ -5,12 +5,12 @@ go 1.18
 require (
 	github.com/aws/aws-sdk-go v1.44.51
 	github.com/jmespath/go-jmespath v0.4.0
-	google.golang.org/grpc v1.46.2
+	google.golang.org/grpc v1.47.0
 	k8s.io/api v0.24.2
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
 	k8s.io/klog/v2 v2.60.1
-	sigs.k8s.io/secrets-store-csi-driver v1.1.2
+	sigs.k8s.io/secrets-store-csi-driver v1.2.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
