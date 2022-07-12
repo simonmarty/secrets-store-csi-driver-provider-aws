@@ -8,7 +8,7 @@ require (
 	google.golang.org/grpc v1.46.2
 	k8s.io/api v0.24.2
 	k8s.io/apimachinery v0.24.2
-	k8s.io/client-go v0.24.0
+	k8s.io/client-go v0.24.2
 	k8s.io/klog/v2 v2.60.1
 	sigs.k8s.io/secrets-store-csi-driver v1.1.2
 	sigs.k8s.io/yaml v1.3.0
