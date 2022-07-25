@@ -3,7 +3,7 @@ module github.com/aws/secrets-store-csi-driver-provider-aws
 go 1.18
 
 require (
-	github.com/aws/aws-sdk-go v1.44.58
+	github.com/aws/aws-sdk-go v1.44.61
 	github.com/jmespath/go-jmespath v0.4.0
 	google.golang.org/grpc v1.48.0
 	k8s.io/api v0.24.3
