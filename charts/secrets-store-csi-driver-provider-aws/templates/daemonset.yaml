@@ -23,6 +23,10 @@ spec:
 {{- toYaml .Values.podAnnotations | nindent 8 }}
 {{- end }}
     spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "provider.serviceAccountName" . }}
       hostNetwork: false
       containers:
