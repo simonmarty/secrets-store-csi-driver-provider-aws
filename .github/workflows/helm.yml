@@ -1,0 +1,13 @@
+name: Helm
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set Up Helm
+      uses: azure/setup-helm@v4
+    - name: Lint Chart
+      run: helm lint charts/secrets-store-csi-driver-provider-aws
