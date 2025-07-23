@@ -24,5 +24,5 @@ jobs:
           build-args: LDFLAGS=-X 'github.com/aws/secrets-store-csi-driver-provider-aws/server.Version=fakeversion' -X 'github.com/aws/secrets-store-csi-driver-provider-aws/auth.ProviderVersion=fakeversion' -extldflags '-static'
           context: .
           platforms: linux/amd64,linux/arm64
-          push: false
+          load: true
           tags: test-build:latest
