@@ -29,4 +29,5 @@ jobs:
           context: .
           platforms: ${{ matrix.arch }}
           load: true
-          tags: test-build:latest
+          tags: latest
+          labels: secrest-store-csi-driver-provider-aws-${{ matrix.arch }}
