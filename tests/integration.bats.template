@@ -2,8 +2,6 @@
 
 load helpers
 
-WAIT_TIME=120
-SLEEP_TIME=1
 PROVIDER_YAML=../deployment/private-installer.yaml
 NAMESPACE=kube-system
 CLUSTER_NAME=integ-cluster-{{ARCH}}-{{AUTH_TYPE}}
@@ -99,8 +97,7 @@ validate_jmes_mount() {
 	log "Installing AWS provider"
 
 	envsubst < $PROVIDER_YAML | kubectl --kubeconfig=${{KUBECONFIG_VAR}} apply -f -
-	cmd="kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait --for=condition=Ready --timeout=60s pod -l app=csi-secrets-store-provider-aws"
-	wait_for_process $WAIT_TIME $SLEEP_TIME "$cmd"
+	kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait --for=condition=Ready --timeout=60s pod -l app=csi-secrets-store-provider-aws
 
 	PROVIDER_POD=$(kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod -l app=csi-secrets-store-provider-aws -o jsonpath="{.items[0].metadata.name}")
 	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod/$PROVIDER_POD
@@ -112,8 +109,7 @@ validate_jmes_mount() {
 @test "secretproviderclasses crd is established" {
 	log "Verifying secretproviderclasses CRD is established"
 
-	cmd="kubectl --kubeconfig=${{KUBECONFIG_VAR}} wait --namespace $NAMESPACE --for condition=established --timeout=60s crd/secretproviderclasses.secrets-store.csi.x-k8s.io"
-	wait_for_process $WAIT_TIME $SLEEP_TIME "$cmd"
+	kubectl --kubeconfig=${{KUBECONFIG_VAR}} wait --namespace $NAMESPACE --for condition=established --timeout=60s crd/secretproviderclasses.secrets-store.csi.x-k8s.io
 
 	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} get crd/secretproviderclasses.secrets-store.csi.x-k8s.io
 	assert_success
@@ -125,9 +121,7 @@ validate_jmes_mount() {
 	log "Deploying AWS SecretProviderClass CRD"
 
 	envsubst < BasicTestMountSPC-{{ARCH}}-{{AUTH_TYPE}}.yaml | kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE apply -f -
-
-	cmd="kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get secretproviderclasses.secrets-store.csi.x-k8s.io/basic-test-mount-spc-{{ARCH}}-{{AUTH_TYPE}} -o yaml | grep aws"
-	wait_for_process $WAIT_TIME $SLEEP_TIME "$cmd"
+	kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait --for=create --timeout=60s secretproviderclass basic-test-mount-spc-{{ARCH}}-{{AUTH_TYPE}}
 
 	log "AWS SecretProviderClass CRD deployment completed"
 }
@@ -136,8 +130,7 @@ validate_jmes_mount() {
 	log "Starting CSI inline volume test with pod portability"
 
 	kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE apply -f BasicTestMount-{{ARCH}}-{{AUTH_TYPE}}.yaml
-	cmd="kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait --for=condition=Ready --timeout=60s pod/basic-test-mount-{{ARCH}}-{{AUTH_TYPE}}"
-	wait_for_process $WAIT_TIME $SLEEP_TIME "$cmd"
+	kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait --for=condition=Ready --timeout=60s pod/basic-test-mount-{{ARCH}}-{{AUTH_TYPE}}
 
 	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod/$POD_NAME
 	assert_success
@@ -264,7 +257,7 @@ validate_jmes_mount() {
 	assert_success
 
 	log "Waiting for secret to be deleted"
-	run wait_for_process $WAIT_TIME $SLEEP_TIME "check_secret_deleted secret $NAMESPACE ${{KUBECONFIG_VAR}}"
+	kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait for=delete --timeout=60s secret secret
 	assert_success
 
 	log "Deployment deletion and secret cleanup test completed"
