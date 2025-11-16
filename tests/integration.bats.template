@@ -257,7 +257,7 @@ validate_jmes_mount() {
 	assert_success
 
 	log "Waiting for secret to be deleted"
-	kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait for=delete --timeout=60s secret secret
+	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE wait --for=delete --timeout=60s secret secret
 	assert_success
 
 	log "Deployment deletion and secret cleanup test completed"
