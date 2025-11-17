@@ -22,7 +22,7 @@ log() {
 
 if [[ -z "${PRIVREPO}" ]]; then
 	echo "Error: PRIVREPO is not specified" >&2
-	return 1
+	exit 1
 fi
 
 if [[ -z "${{{NODE_TYPE_VAR}}}" ]]; then
