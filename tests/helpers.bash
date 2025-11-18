@@ -50,10 +50,39 @@ assert_not_match() {
   fi
 }
 
+wait_for_process(){
+  wait_time="$1"
+  sleep_time="$2"
+  cmd="$3"
+  while [ "$wait_time" -gt 0 ]; do
+    if eval "$cmd"; then
+      return 0
+    else
+      sleep "$sleep_time"
+      wait_time=$((wait_time-sleep_time))
+    fi
+  done
+  return 1
+}
+
 compare_owner_count() {
   secret="$1"
   namespace="$2"
   ownercount="$3"
 
   [[ "$(kubectl get secret ${secret} -n ${namespace} -o json | jq '.metadata.ownerReferences | length')" -eq $ownercount ]]
+}
+
+check_secret_deleted() {
+  secret="$1"
+  namespace="$2"
+  kubeconfig_file="$3"
+
+  if [[ -z "$kubeconfig_file" ]]; then
+    result=$(kubectl get secret -n ${namespace} | grep "^${secret}$" | wc -l)
+  else
+    result=$(kubectl --kubeconfig="$kubeconfig_file" get secret -n ${namespace} | grep "^${secret}$" | wc -l)
+  fi
+
+  [[ "$result" -eq 0 ]]
 }
