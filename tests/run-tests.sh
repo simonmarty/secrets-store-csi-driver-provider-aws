@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 cleanup() {
 	cleanup_generated_files
 	cleanup_secrets
