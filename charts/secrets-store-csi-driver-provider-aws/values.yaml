@@ -49,10 +49,6 @@ rbac:
   install: true
 
 serviceAccount:
-  # Annotations to add to the service account
-  # Example for IRSA:
-  #   annotations:
-  #     eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-role
   annotations: {}
 
 securityContext:
