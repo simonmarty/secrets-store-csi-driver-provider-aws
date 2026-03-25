@@ -107,11 +107,7 @@ validate_jmes_mount() {
 	envsubst < $PROVIDER_YAML | kubectl --kubeconfig=${{KUBECONFIG_VAR}} apply -f -
 
 	KUBECONFIG=${{KUBECONFIG_VAR}} helm package --dependency-update ../charts/secrets-store-csi-driver-provider-aws
-	KUBECONFIG=${{KUBECONFIG_VAR}} helm install -n $NAMESPACE --wait --wait-for-jobs --timeout=30s csi-secrets-store-provider-aws ../charts/secrets-store-csi-driver-provider-aws \
-	--set image.repository=${PRIVREPO} \
-	--set image.tag=${PRIVTAG} \
-	--set secrets-store-csi-driver.install=false \
-	--set-json 'imagePullSecrets=[{"name":"ghcr-secret"}]'
+	KUBECONFIG=${{KUBECONFIG_VAR}} helm install -n $NAMESPACE --wait --wait-for-jobs --timeout=30s csi-secrets-store-provider-aws ../charts/secrets-store-csi-driver-provider-aws --set image.repository=${PRIVREPO} --set image.tag=${PRIVTAG} --set secrets-store-csi-driver.install=false --set-json 'imagePullSecrets=[{"name":"ghcr-secret"}]'
 
 	PROVIDER_POD=$(kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod -l app=csi-secrets-store-provider-aws -o jsonpath="{.items[0].metadata.name}")
 	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod/$PROVIDER_POD
