@@ -11,6 +11,7 @@ POD_NAME=basic-test-mount-{{ARCH}}-{{AUTH_TYPE}}
 export REGION=us-west-2
 export FAILOVERREGION=us-east-2
 export ACCOUNT_NUMBER=$(aws --region $REGION sts get-caller-identity --query Account --output text)
+echo "integration.bats - GITHUB_ACTOR = ${GITHUB_ACTOR}, PRIV_REPO = ${PRIVREPO}, PRIV_TAG = ${PRIVTAG}"
 
 {{LOG_COLOR}}='\033[0;{{COLOR_CODE}}m'
 NC='\033[0m'
@@ -50,7 +51,7 @@ setup_file() {
 {{AUTH_SETUP}}
 
 	log "Create GHCR secret"
-	KUBECONFIG=${{KUBECONFIG_VAR}} kubectl create secret docker-registry ghcr-secret --docker-server=ghcr.io --docker-username=$GITHUB_ACTOR --docker-password=$GITHUB_TOKEN -n kube-system
+	KUBECONFIG=${{KUBECONFIG_VAR}} kubectl create secret docker-registry ghcr-secret --docker-server=ghcr.io --docker-username=$GITHUB_ACTOR --docker-password=$GITHUB_TOKEN -n $NAMESPACE
 
 	log "Adding secrets-store-csi-driver Helm repository"
 	helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts

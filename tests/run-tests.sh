@@ -65,6 +65,7 @@ fi
 
 # Generate test files from templates (this also creates secrets)
 generate_test_files
+echo "run.tests.sh - GITHUB_ACTOR = ${GITHUB_ACTOR}, PRIV_REPO = ${PRIVREPO}, PRIV_TAG = ${PRIVTAG}"
 
 # Run tests based on argument
 bats_exit_code=0
