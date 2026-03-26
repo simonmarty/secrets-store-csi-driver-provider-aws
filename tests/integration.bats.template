@@ -56,10 +56,7 @@ setup_file() {
 	helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 
 	log "Installing secrets-store-csi-driver via Helm"
-	KUBECONFIG=${{KUBECONFIG_VAR}} helm --namespace=$NAMESPACE install --wait --wait-for-jobs --timeout=30s csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver \
-	--set enableSecretRotation=true \
-	--set rotationPollInterval=15s \
-	--set syncSecret.enabled=true
+	KUBECONFIG=${{KUBECONFIG_VAR}} helm --namespace=$NAMESPACE install --wait --wait-for-jobs --timeout=30s csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --set enableSecretRotation=true --set rotationPollInterval=15s --set syncSecret.enabled=true
 
 	log "Cluster setup completed for $CLUSTER_NAME"
 }
