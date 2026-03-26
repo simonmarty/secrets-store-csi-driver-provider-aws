@@ -50,7 +50,7 @@ setup_file() {
 {{AUTH_SETUP}}
 
 	log "Create GHCR secret"
-	KUBECONFIG=${{KUBECONFIG_VAR}} kubectl create secret docker-registry ghcr-secret --docker-server=ghcr.io --docker-username=${GITHUB_ACTOR} --docker-password=${GITHUB_TOKEN} -n kube-system
+	KUBECONFIG=${{KUBECONFIG_VAR}} kubectl create secret docker-registry ghcr-secret --docker-server=ghcr.io --docker-username=$GITHUB_ACTOR --docker-password=$GITHUB_TOKEN -n kube-system
 
 	log "Adding secrets-store-csi-driver Helm repository"
 	helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
@@ -107,7 +107,7 @@ validate_jmes_mount() {
 	envsubst < $PROVIDER_YAML | kubectl --kubeconfig=${{KUBECONFIG_VAR}} apply -f -
 
 	KUBECONFIG=${{KUBECONFIG_VAR}} helm package --dependency-update ../charts/secrets-store-csi-driver-provider-aws
-	KUBECONFIG=${{KUBECONFIG_VAR}} helm install -n $NAMESPACE --wait --wait-for-jobs --timeout=30s csi-secrets-store-provider-aws ../charts/secrets-store-csi-driver-provider-aws --set image.repository=${PRIVREPO} --set image.tag=${PRIVTAG} --set secrets-store-csi-driver.install=false --set-json 'imagePullSecrets=[{"name":"ghcr-secret"}]'
+	KUBECONFIG=${{KUBECONFIG_VAR}} helm install -n $NAMESPACE --wait --wait-for-jobs --timeout=30s csi-secrets-store-provider-aws ../charts/secrets-store-csi-driver-provider-aws --set image.repository=$PRIVREPO --set image.tag=$PRIVTAG --set secrets-store-csi-driver.install=false --set-json 'imagePullSecrets=[{"name":"ghcr-secret"}]'
 
 	PROVIDER_POD=$(kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod -l app=csi-secrets-store-provider-aws -o jsonpath="{.items[0].metadata.name}")
 	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} --namespace $NAMESPACE get pod/$PROVIDER_POD
