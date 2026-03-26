@@ -11,7 +11,6 @@ POD_NAME=basic-test-mount-{{ARCH}}-{{AUTH_TYPE}}
 export REGION=us-west-2
 export FAILOVERREGION=us-east-2
 export ACCOUNT_NUMBER=$(aws --region $REGION sts get-caller-identity --query Account --output text)
-echo "integration.bats - GITHUB_ACTOR = ${GITHUB_ACTOR}, PRIV_REPO = ${PRIVREPO}, PRIV_TAG = ${PRIVTAG}"
 
 {{LOG_COLOR}}='\033[0;{{COLOR_CODE}}m'
 NC='\033[0m'
@@ -122,7 +121,7 @@ validate_jmes_mount() {
 
 	kubectl --kubeconfig=${{KUBECONFIG_VAR}} wait --namespace $NAMESPACE --for condition=established --timeout=60s crd/secretproviderclasses.secrets-store.csi.x-k8s.io
 
-	kubectl --kubeconfig=${{KUBECONFIG_VAR}} get crd/secretproviderclasses.secrets-store.csi.x-k8s.io
+	run kubectl --kubeconfig=${{KUBECONFIG_VAR}} get crd/secretproviderclasses.secrets-store.csi.x-k8s.io
 	assert_success
 
 	log "secretproviderclasses CRD verification completed"
