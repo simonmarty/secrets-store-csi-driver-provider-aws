@@ -15,6 +15,7 @@ import (
 	"k8s.io/klog/v2"
 	csidriver "sigs.k8s.io/secrets-store-csi-driver/provider/v1alpha1"
 
+	"github.com/aws/secrets-store-csi-driver-provider-aws/auth"
 	"github.com/aws/secrets-store-csi-driver-provider-aws/provider"
 	"github.com/aws/secrets-store-csi-driver-provider-aws/server"
 )
@@ -57,8 +58,7 @@ func parsePodIdentityHttpTimeout(timeoutStr string) *time.Duration {
 // requests.
 func main() {
 
-	klog.Infof("Starting %s version %s", server.ProviderName, server.Version)
-	klog.Infof("This provider requires tokenRequests to be configured in the CSIDriver spec (audiences: sts.amazonaws.com, pods.eks.amazonaws.com)")
+	klog.Infof("Starting %s version %s", auth.ProviderName, server.Version)
 
 	flag.Parse() // Parse command line flags
 
