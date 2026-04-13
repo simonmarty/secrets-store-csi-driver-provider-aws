@@ -1,3 +1,8 @@
+// Benchmarks for the server package covering end-to-end mount request
+// handling with mocked AWS clients (single secret, mixed types, JMES path
+// extraction, and large batches).
+// All benchmark tests benchmark both server initialization and mount requests.
+// Run with: go test -bench=. -benchmem ./server/
 package server
 
 import (
@@ -15,9 +20,10 @@ import (
 
 func buildBenchMountReq(dir string, tst testCase) *v1alpha1.MountRequest {
 	attrMap := map[string]string{
-		"csi.storage.k8s.io/pod.name":            tst.attributes["podName"],
-		"csi.storage.k8s.io/pod.namespace":       tst.attributes["namespace"],
-		"csi.storage.k8s.io/serviceAccount.name": tst.attributes["accName"],
+		"csi.storage.k8s.io/pod.name":              tst.attributes["podName"],
+		"csi.storage.k8s.io/pod.namespace":         tst.attributes["namespace"],
+		"csi.storage.k8s.io/serviceAccount.name":   tst.attributes["accName"],
+		"csi.storage.k8s.io/serviceAccount.tokens": `{"sts.amazonaws.com":{"token":"fake-irsa-token","expirationTimestamp":"2099-01-15T10:30:00Z"},"pods.eks.amazonaws.com":{"token":"fake-pod-identity-token","expirationTimestamp":"2099-01-15T10:30:00Z"}}`,
 	}
 	if r := tst.attributes["region"]; len(r) > 0 {
 		attrMap["region"] = r
@@ -60,7 +66,10 @@ func BenchmarkMount_SingleSecret(b *testing.B) {
 		dir := b.TempDir()
 		svr := newServerWithMocks(&tst, true, nil)
 		req := buildBenchMountReq(dir, tst)
-		svr.Mount(context.Background(), req)
+
+		if _, err := svr.Mount(context.Background(), req); err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 
@@ -90,7 +99,9 @@ func BenchmarkMount_MixedSecrets(b *testing.B) {
 		dir := b.TempDir()
 		svr := newServerWithMocks(&tst, true, nil)
 		req := buildBenchMountReq(dir, tst)
-		svr.Mount(context.Background(), req)
+		if _, err := svr.Mount(context.Background(), req); err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 
@@ -120,7 +131,9 @@ func BenchmarkMount_WithJMESPath(b *testing.B) {
 		dir := b.TempDir()
 		svr := newServerWithMocks(&tst, true, nil)
 		req := buildBenchMountReq(dir, tst)
-		svr.Mount(context.Background(), req)
+		if _, err := svr.Mount(context.Background(), req); err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 
@@ -151,5 +164,8 @@ func BenchmarkMount_LargeBatch(b *testing.B) {
 		svr := newServerWithMocks(&tst, true, nil)
 		req := buildBenchMountReq(dir, tst)
 		svr.Mount(context.Background(), req)
+		if _, err := svr.Mount(context.Background(), req); err != nil {
+			b.Fatal(err)
+		}
 	}
 }
