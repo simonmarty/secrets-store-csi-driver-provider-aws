@@ -34,7 +34,6 @@ jobs:
           key: benchmark-baseline-${{ runner.os }}
 
       - name: Compare benchmarks
-        if: github.event_name == 'pull_request'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'go'
