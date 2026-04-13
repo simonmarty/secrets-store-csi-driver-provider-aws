@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           path: bench-baseline.txt
-          key: benchmark-baseline-${{ runner.os }}-main
+          key: benchmark-baseline-${{ runner.os }}
       
       - name: Compare benchmarks
         if: github.event_name == 'pull_request'
@@ -40,7 +40,7 @@ jobs:
           tool: 'go'
           output-file-path: bench-result.txt
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          external-data-json-path: ./cache/benchmark-baseline-${{ runner.os }}.txt
+          external-data-json-path: bench-baseline.txt
           comment-on-alert: true
           summary-always: true
 
@@ -53,4 +53,4 @@ jobs:
         uses: actions/cache/save@v5
         with:
           path: bench-baseline.txt
-          key: benchmark-baseline-${{ runner.os }}-main
+          key: benchmark-baseline-${{ runner.os }}
