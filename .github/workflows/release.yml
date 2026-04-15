@@ -23,6 +23,10 @@ jobs:
   docker-build:
     uses: ./.github/workflows/docker-image.yml
   integ:
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     uses: ./.github/workflows/integ.yml
   release:
     environment: prod
