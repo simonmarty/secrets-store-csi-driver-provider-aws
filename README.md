@@ -8,6 +8,7 @@ AWS offers two services to manage secrets and parameters conveniently in your co
 ## Installation
 
 ### Requirements
+
 * Amazon Elastic Kubernetes Service (EKS) 1.17+ running an EC2 node group (Fargate node groups are not supported **[^1]**). If using EKS Pod Identity feature, EKS 1.24+ is required. 
 * [Secrets Store CSI driver installed](https://secrets-store-csi-driver.sigs.k8s.io/getting-started/installation.html):
     ```shell
