@@ -22,9 +22,15 @@ jobs:
           role-to-assume: ${{ secrets.CODE_REVIEW_ROLE }}
           aws-region: us-west-2
 
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - uses: anthropics/claude-code-action@v1
         with:
+          github_token: ${{ steps.app-token.outputs.token }}
           use_bedrock: "true"
           claude_args: |
             --model us.anthropic.claude-opus-4-8
